@@ -90,14 +90,18 @@ public class Validation {
     }
 
     // 6. Nhập lựa chọn U/D
-    public static String checkUpdateDelete(String msg) {
-        while (true) {
+    public static boolean checkUpdateDelete(String msg) {
+        String value = "";
+        boolean isValid = false;
+        while (!isValid) {
             System.out.print(msg);
-            String value = scanner.nextLine().trim();
+            value = scanner.nextLine().trim();
             if (value.equalsIgnoreCase("U") || value.equalsIgnoreCase("D")) {
-                return value.toUpperCase();
+                isValid = true;
+            } else {
+                System.out.println("Please input U or D.");
             }
-            System.out.println("Please input U or D.");
         }
+        return value.equalsIgnoreCase("U");
     }
 }

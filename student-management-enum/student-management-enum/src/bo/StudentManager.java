@@ -108,8 +108,8 @@ public class StudentManager {
             return;
         }
 
-        String action = Validation.checkUpdateDelete("Bạn muốn cập nhật (U) hay xóa (D) sinh viên này: ");
-        if (action.equalsIgnoreCase("U")) {
+        boolean isUpdate = Validation.checkUpdateDelete("Bạn muốn cập nhật (U) hay xóa (D) sinh viên này: ");
+        if (isUpdate) {
             Student studentToUpdate;
             if (matches.size() == 1) {
                 studentToUpdate = matches.get(0);
