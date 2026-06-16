@@ -44,10 +44,18 @@ public class StudentManager {
             // Kiểm tra trùng lặp bản ghi (ID, học kỳ, khóa học)
             if (checkDuplicate(id, semester, course)) {
                 System.out.println("Lỗi: Bản ghi đã tồn tại (Sinh viên này đã học môn này trong học kỳ này)!");
-            } else {
-                studentList.add(new Student(id, name, semester, course));
-                System.out.println("Thêm sinh viên thành công.");
+                
+                // In thông báo trước khi nhảy xuống điều kiện while bằng lệnh continue
+                if (studentList.size() <= 10) {
+                    System.out.println("Hiện có " + studentList.size() + " sinh viên. Tiếp tục nhập để đạt trên 10 sinh viên.");
+                } else {
+                    System.out.println("Do you want to continue (Y/N)? Choose Y to continue, N to return main screen.");
+                }
+                continue;
             }
+            
+            studentList.add(new Student(id, name, semester, course));
+            System.out.println("Thêm sinh viên thành công.");
 
             // In thông báo nếu cần hỏi Y/N
             if (studentList.size() <= 10) {
