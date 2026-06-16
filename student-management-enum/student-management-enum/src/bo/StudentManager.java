@@ -25,7 +25,7 @@ public class StudentManager {
 
     // 1. Chức năng 1: Tạo sinh viên (Create Student)
     public void createStudent() {
-        while (true) {
+        do {
             String id = Validation.getInputString("Nhập mã sinh viên (Student ID): ", "Mã sinh viên không được rỗng!");
             
             // Tìm xem ID này đã tồn tại trong hệ thống chưa
@@ -49,22 +49,13 @@ public class StudentManager {
                 System.out.println("Thêm sinh viên thành công.");
             }
 
-            // Kiểm tra điều kiện đủ 10 sinh viên trở lên
-            if (studentList.size() >= 10) {
-                System.out.println("Danh sách đã có " + studentList.size() + " sinh viên.");
-                System.out.println("Bạn có muốn tiếp tục tạo sản phẩm/sinh viên không?");
-                if (!Validation.getInputYOrN()) {
-                    break;
-                }
+            // In thông báo nếu cần hỏi Y/N
+            if (studentList.size() <= 10) {
+                System.out.println("Hiện có " + studentList.size() + " sinh viên. Tiếp tục nhập để đạt trên 10 sinh viên.");
             } else {
-                // Nhỏ hơn 10 bản ghi, hỏi tiếp tục nhập
-                System.out.println("Hiện có " + studentList.size() + "/10 sinh viên tối thiểu.");
-                System.out.println("Bạn có muốn tiếp tục tạo sản phẩm/sinh viên không?");
-                if (!Validation.getInputYOrN()) {
-                    break;
-                }
+                System.out.println("Do you want to continue (Y/N)? Choose Y to continue, N to return main screen.");
             }
-        }
+        } while (studentList.size() <= 10 || Validation.getInputYOrN());
     }
 
     // 2. Chức năng 2: Tìm kiếm và Sắp xếp (Find and Sort)
