@@ -1,13 +1,26 @@
 package fibonacci45;
 
-import java.util.Scanner;
-
 public class Fibonacci45 {
 
-   public static long fibonacciLoop(int n) {
-        if (n <= 1) return n;
+    public static long fibonacciLoop(int n) {
+        if (n <= 1) {
+            return n;
+        }
         long a = 0, b = 1, c;
         for (int i = 2; i <= n; i++) {
+            c = a + b;
+            a = b;
+            b = c;
+        }
+        return b;
+    }
+
+    public static long finaboncciLop(int n) {
+        if (n <= 1) {
+            return n;
+        }
+        long a = 0, b = 1, c;
+        for (int i = 2; i < n; i++) {
             c = a + b;
             a = b;
             b = c;

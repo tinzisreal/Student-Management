@@ -1,50 +1,53 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
- */
 package binarysearch;
 
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
-/**
- *
- * @author lenovo
- */
 public class BinarySearch {
 
-    // Hàm nhập số nguyên dương
-    public static int inputPositiveNumber(Scanner sc, String message) {
-
+    // Nhập số nguyên dương
+    private static int getPositiveInteger(Scanner sc, String message) {
         int number;
 
         while (true) {
+            System.out.print(message);
 
-            try {
-
-                System.out.print(message);
-
-                number = Integer.parseInt(sc.nextLine());
+            if (sc.hasNextInt()) {
+                number = sc.nextInt();
 
                 if (number > 0) {
                     return number;
+                } else {
+                    System.out.println("Must be a positive integer.");
                 }
-
-                System.out.println("Please enter a positive number.");
-
-            } catch (Exception e) {
-
-                System.out.println("Invalid input.");
+            } else {
+                System.out.println("Invalid input, must be an integer.");
+                sc.next();
             }
         }
     }
 
-    // Hàm tạo mảng random
+    // Nhập số nguyên bất kỳ
+    private static int getInteger(Scanner sc, String message) {
+        int number;
+
+        while (true) {
+            System.out.print(message);
+
+            if (sc.hasNextInt()) {
+                number = sc.nextInt();
+                return number;
+            } else {
+                System.out.println("Invalid input, must be an integer.");
+                sc.next();
+            }
+        }
+    }
+
+    // Tạo mảng random
     public static int[] generateRandomArray(int size) {
-
         Random rd = new Random();
-
         int[] arr = new int[size];
 
         for (int i = 0; i < size; i++) {
@@ -54,32 +57,13 @@ public class BinarySearch {
         return arr;
     }
 
-    // Hàm in mảng
-    public static void printArray(int[] arr) {
-
-        System.out.print("[");
-
-        for (int i = 0; i < arr.length; i++) {
-
-            System.out.print(arr[i]);
-
-            if (i < arr.length - 1) {
-                System.out.print(", ");
-            }
-        }
-
-        System.out.println("]");
-    }
-
-    // Hàm binary search
+    // Binary Search
     public static int binarySearch(int[] arr, int searchValue) {
-
         int left = 0;
         int right = arr.length - 1;
 
         while (left <= right) {
-
-            int mid = (left + right) / 2;
+            int mid = left + (right - left) / 2;
 
             if (arr[mid] == searchValue) {
                 return mid;
@@ -95,33 +79,33 @@ public class BinarySearch {
         return -1;
     }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-
         Scanner sc = new Scanner(System.in);
 
-        int size = inputPositiveNumber(sc, "Enter number of array: ");
+        int size = getPositiveInteger(sc, "Enter number of array: ");
 
-        int searchValue = inputPositiveNumber(sc, "Enter search value: ");
+        // Cho phép nhập cả số âm và 0
+        int searchValue = getInteger(sc, "Enter search value: ");
 
+        // Tạo mảng
         int[] arr = generateRandomArray(size);
 
-        // sort array
+        // Sắp xếp mảng
         Arrays.sort(arr);
 
-        System.out.print("Sorted array: ");
-        printArray(arr);
+        // In mảng
+        System.out.println("Sorted array: " + Arrays.toString(arr));
 
-        // binary search
+        // Tìm kiếm
         int index = binarySearch(arr, searchValue);
 
+        // Kết quả
         if (index != -1) {
             System.out.println("Found " + searchValue + " at index: " + index);
         } else {
             System.out.println(searchValue + " not found.");
         }
-    }
 
+        sc.close();
+    }
 }

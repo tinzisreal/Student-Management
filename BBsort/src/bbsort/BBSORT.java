@@ -1,5 +1,6 @@
 package bbsort;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -21,17 +22,6 @@ public class BBSORT {
                 sc.next(); // bỏ token sai để tránh lặp vô hạn
             }
         }
-    }
-
-    public static void printArray(int[] arr) {
-        System.out.print("[");
-        for (int i = 0; i < arr.length; i++) {
-            System.out.print(arr[i]);
-            if (i < arr.length - 1) {
-                System.out.print(", ");
-            }
-        }
-        System.out.println("]");
     }
 
     private static int[] generateRandomArray(int size) {
@@ -71,8 +61,7 @@ public class BBSORT {
         int[] arr = generateRandomArray(size);
 
         System.out.println("Before sort:");
-        printArray(arr);
-
+        System.out.println("Sorted array: " + Arrays.toString(arr));
         bubbleSort(arr);
 
         System.out.println("After sort:");

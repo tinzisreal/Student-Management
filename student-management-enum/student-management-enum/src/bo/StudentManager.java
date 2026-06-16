@@ -34,6 +34,14 @@ public class StudentManager {
             if (existingStudent != null) {
                 name = existingStudent.getStudentName();
                 System.out.println("Sinh viên đã tồn tại trong hệ thống (Tên: " + name + ")");
+                
+                // In thông báo trước khi nhảy xuống điều kiện while bằng lệnh continue
+                if (studentList.size() <= 10) {
+                    System.out.println("Hiện có " + studentList.size() + " sinh viên. Tiếp tục nhập để đạt trên 10 sinh viên.");
+                } else {
+                    System.out.println("Do you want to continue (Y/N)? Choose Y to continue, N to return main screen.");
+                }
+                continue;
             } else {
                 name = Validation.getInputString("Nhập tên sinh viên: ", "Tên sinh viên không được rỗng!");
             }
