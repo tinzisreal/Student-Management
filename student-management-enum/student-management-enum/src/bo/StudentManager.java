@@ -2,6 +2,7 @@ package bo;
 
 import entity.Course;
 import entity.Student;
+import entity.Enrollment;
 import utils.Validation;
 import utils.StudentComparator;
 
@@ -17,10 +18,18 @@ public class StudentManager {
 
     // Constructor khởi tạo sẵn dữ liệu mẫu
     public StudentManager() {
-        studentList.add(new Student("1", "Nguyen Van A", "HK1", Course.JAVA));
-        studentList.add(new Student("2", "Tran Thi B", "HK1", Course.DOT_NET));
-        studentList.add(new Student("3", "Le Van C", "HK2", Course.C_CPP));
-        studentList.add(new Student("1", "Nguyen Van A", "HK2", Course.DOT_NET));
+        Student s1 = new Student("1", "Nguyen Van A");
+        s1.addEnrollment("HK1", Course.JAVA);
+        s1.addEnrollment("HK2", Course.DOT_NET);
+        studentList.add(s1);
+
+        Student s2 = new Student("2", "Tran Thi B");
+        s2.addEnrollment("HK1", Course.DOT_NET);
+        studentList.add(s2);
+
+        Student s3 = new Student("3", "Le Van C");
+        s3.addEnrollment("HK2", Course.C_CPP);
+        studentList.add(s3);
     }
 
     // 1. Chức năng 1: Tạo sinh viên (Create Student)
@@ -54,7 +63,13 @@ public class StudentManager {
                 continue;
             }
             
-            studentList.add(new Student(id, name, semester, course));
+            if (existingStudent != null) {
+                existingStudent.addEnrollment(semester, course);
+            } else {
+                Student newStudent = new Student(id, name);
+                newStudent.addEnrollment(semester, course);
+                studentList.add(newStudent);
+            }
             System.out.println("Thêm sinh viên thành công.");
 
             // In thông báo nếu cần hỏi Y/N
@@ -87,39 +102,41 @@ public class StudentManager {
 
         displayHeader();
         for (Student student : results) {
-            System.out.println(student);
+            for (Enrollment enrollment : student.getEnrollments()) {
+                System.out.println(student.toString(enrollment));
+            }
         }
     }
 
     // 3. Chức năng 3: Cập nhật hoặc Xóa sinh viên (Update/Delete)
     public void updateOrDeleteStudent() {
         String id = Validation.getInputString("Nhập mã sinh viên cần sửa/xóa: ", "Mã sinh viên không được rỗng!");
-        List<Student> matches = new ArrayList<>();
-        
-        for (Student student : studentList) {
-            if (student.getId().equalsIgnoreCase(id)) {
-                matches.add(student);
-            }
+        Student student = getStudentById(id);
+
+        if (student == null) {
+            System.out.println("Không tìm thấy sinh viên với mã ID đã cho.");
+            return;
         }
 
-        if (matches.isEmpty()) {
-            System.out.println("Không tìm thấy sinh viên với mã ID đã cho.");
+        List<Enrollment> enrollments = student.getEnrollments();
+        if (enrollments.isEmpty()) {
+            System.out.println("Sinh viên không có bản ghi đăng ký nào.");
             return;
         }
 
         boolean isUpdate = Validation.checkUpdateDelete("Bạn muốn cập nhật (U) hay xóa (D) sinh viên này: ");
         if (isUpdate) {
-            Student studentToUpdate;
-            if (matches.size() == 1) {
-                studentToUpdate = matches.get(0);
+            Enrollment enrollmentToUpdate;
+            if (enrollments.size() == 1) {
+                enrollmentToUpdate = enrollments.get(0);
             } else {
                 System.out.println("Tìm thấy nhiều bản ghi của sinh viên này:");
-                for (int i = 0; i < matches.size(); i++) {
-                    System.out.println((i + 1) + ". " + matches.get(i));
+                for (int i = 0; i < enrollments.size(); i++) {
+                    System.out.println((i + 1) + ". " + student.toString(enrollments.get(i)));
                 }
                 int index = Validation.checkIntegerInRange("Chọn bản ghi muốn cập nhật (theo STT): ", 
-                        "Vui lòng chọn đúng STT có trên màn hình!", 1, matches.size());
-                studentToUpdate = matches.get(index - 1);
+                        "Vui lòng chọn đúng STT có trên màn hình!", 1, enrollments.size());
+                enrollmentToUpdate = enrollments.get(index - 1);
             }
 
             String newName = Validation.getInputString("Nhập tên mới: ", "Tên không được rỗng!");
@@ -128,11 +145,10 @@ public class StudentManager {
 
             // Kiểm tra trùng lặp khóa học trong học kỳ đối với bản ghi khác của cùng sinh viên
             boolean isDuplicate = false;
-            for (Student s : studentList) {
-                if (s != studentToUpdate && 
-                    s.getId().equalsIgnoreCase(id) && 
-                    s.getSemester().equalsIgnoreCase(newSemester) && 
-                    s.getCourse() == newCourse) {
+            for (Enrollment e : enrollments) {
+                if (e != enrollmentToUpdate && 
+                    e.getSemester().equalsIgnoreCase(newSemester) && 
+                    e.getCourse() == newCourse) {
                     isDuplicate = true;
                     break;
                 }
@@ -141,31 +157,32 @@ public class StudentManager {
             if (isDuplicate) {
                 System.out.println("Cập nhật thất bại! Sinh viên đã học môn này trong học kỳ này.");
             } else {
-                // Cập nhật tên mới cho toàn bộ các bản ghi có cùng ID để đảm bảo tính nhất quán
-                for (Student s : studentList) {
-                    if (s.getId().equalsIgnoreCase(id)) {
-                        s.setStudentName(newName);
-                    }
-                }
-                studentToUpdate.setSemester(newSemester);
-                studentToUpdate.setCourse(newCourse);
+                // Cập nhật tên mới cho toàn bộ sinh viên
+                student.setStudentName(newName);
+                enrollmentToUpdate.setSemester(newSemester);
+                enrollmentToUpdate.setCourse(newCourse);
                 System.out.println("Cập nhật thành công.");
             }
         } else {
             // Delete action
-            Student studentToDelete;
-            if (matches.size() == 1) {
-                studentToDelete = matches.get(0);
+            Enrollment enrollmentToDelete;
+            if (enrollments.size() == 1) {
+                enrollmentToDelete = enrollments.get(0);
             } else {
                 System.out.println("Tìm thấy nhiều bản ghi của sinh viên này:");
-                for (int i = 0; i < matches.size(); i++) {
-                    System.out.println((i + 1) + ". " + matches.get(i));
+                for (int i = 0; i < enrollments.size(); i++) {
+                    System.out.println((i + 1) + ". " + student.toString(enrollments.get(i)));
                 }
                 int index = Validation.checkIntegerInRange("Chọn bản ghi muốn xóa (theo STT): ", 
-                        "Vui lòng chọn đúng STT có trên màn hình!", 1, matches.size());
-                studentToDelete = matches.get(index - 1);
+                        "Vui lòng chọn đúng STT có trên màn hình!", 1, enrollments.size());
+                enrollmentToDelete = enrollments.get(index - 1);
             }
-            studentList.remove(studentToDelete);
+            enrollments.remove(enrollmentToDelete);
+            
+            // Nếu không còn lượt học nào, xóa sinh viên khỏi danh sách chính
+            if (enrollments.isEmpty()) {
+                studentList.remove(student);
+            }
             System.out.println("Xóa thành công.");
         }
     }
@@ -179,8 +196,10 @@ public class StudentManager {
 
         Map<String, Integer> reportMap = new LinkedHashMap<>();
         for (Student student : studentList) {
-            String key = student.getStudentName() + "|" + student.getCourse();
-            reportMap.put(key, reportMap.getOrDefault(key, 0) + 1);
+            for (Enrollment enrollment : student.getEnrollments()) {
+                String key = student.getId() + "|" + student.getStudentName() + "|" + enrollment.getCourse();
+                reportMap.put(key, reportMap.getOrDefault(key, 0) + 1);
+            }
         }
 
         System.out.println("\n=== BÁO CÁO KHÓA HỌC SINH VIÊN ===");
@@ -188,7 +207,7 @@ public class StudentManager {
         System.out.println("-----------------------------------------");
         for (Map.Entry<String, Integer> entry : reportMap.entrySet()) {
             String[] parts = entry.getKey().split("\\|");
-            System.out.printf("%-20s | %-10s | %-5d\n", parts[0], parts[1], entry.getValue());
+            System.out.printf("%-20s | %-10s | %-5d\n", parts[1], parts[2], entry.getValue());
         }
     }
 
@@ -204,11 +223,12 @@ public class StudentManager {
 
     // Helper: Kiểm tra trùng lặp bản ghi
     private boolean checkDuplicate(String id, String semester, Course course) {
-        for (Student s : studentList) {
-            if (s.getId().equalsIgnoreCase(id) && 
-                s.getSemester().equalsIgnoreCase(semester) && 
-                s.getCourse() == course) {
-                return true;
+        Student s = getStudentById(id);
+        if (s != null) {
+            for (Enrollment e : s.getEnrollments()) {
+                if (e.getSemester().equalsIgnoreCase(semester) && e.getCourse() == course) {
+                    return true;
+                }
             }
         }
         return false;

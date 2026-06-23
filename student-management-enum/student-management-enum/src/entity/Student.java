@@ -1,19 +1,28 @@
 package entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Student {
     private String id;
     private String studentName;
-    private String semester;
-    private Course course;
+    private List<Enrollment> enrollments;
 
     public Student() {
+        this.enrollments = new ArrayList<>();
+    }
+
+    public Student(String id, String studentName) {
+        this.id = id;
+        this.studentName = studentName;
+        this.enrollments = new ArrayList<>();
     }
 
     public Student(String id, String studentName, String semester, Course course) {
         this.id = id;
         this.studentName = studentName;
-        this.semester = semester;
-        this.course = course;
+        this.enrollments = new ArrayList<>();
+        this.enrollments.add(new Enrollment(semester, course));
     }
 
     public String getId() {
@@ -32,24 +41,28 @@ public class Student {
         this.studentName = studentName;
     }
 
-    public String getSemester() {
-        return semester;
+    public List<Enrollment> getEnrollments() {
+        return enrollments;
     }
 
-    public void setSemester(String semester) {
-        this.semester = semester;
+    public void setEnrollments(List<Enrollment> enrollments) {
+        this.enrollments = enrollments;
     }
 
-    public Course getCourse() {
-        return course;
+    public void addEnrollment(String semester, Course course) {
+        this.enrollments.add(new Enrollment(semester, course));
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public String toString(Enrollment enrollment) {
+        return String.format("%-10s | %-20s | %-10s | %-10s", id, studentName, enrollment.getSemester(), enrollment.getCourse());
     }
 
     @Override
     public String toString() {
-        return String.format("%-10s | %-20s | %-10s | %-10s", id, studentName, semester, course);
+        if (enrollments.isEmpty()) {
+            return String.format("%-10s | %-20s | %-10s | %-10s", id, studentName, "", "");
+        }
+        Enrollment first = enrollments.get(0);
+        return toString(first);
     }
 }
