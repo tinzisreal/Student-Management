@@ -7,11 +7,11 @@ public class Intern extends Candidate {
 
     public Intern() {
         super();
-        this.type = 2;
+        setType(CandidateType.INTERN);
     }
 
     public Intern(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, String majors, int semester, String universityName) {
-        super(id, firstName, lastName, birthDate, address, phone, email, 2);
+        super(id, firstName, lastName, birthDate, address, phone, email, CandidateType.INTERN);
         this.majors = majors;
         this.semester = semester;
         this.universityName = universityName;

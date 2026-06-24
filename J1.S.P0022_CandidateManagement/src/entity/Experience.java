@@ -6,11 +6,11 @@ public class Experience extends Candidate {
 
     public Experience() {
         super();
-        this.type = 0;
+        setType(CandidateType.EXPERIENCE);
     }
 
     public Experience(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, int expInYear, String proSkill) {
-        super(id, firstName, lastName, birthDate, address, phone, email, 0);
+        super(id, firstName, lastName, birthDate, address, phone, email, CandidateType.EXPERIENCE);
         this.expInYear = expInYear;
         this.proSkill = proSkill;
     }

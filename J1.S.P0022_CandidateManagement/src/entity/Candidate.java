@@ -1,19 +1,19 @@
 package entity;
 
 public class Candidate {
-    protected String id;
-    protected String firstName;
-    protected String lastName;
-    protected int birthDate;
-    protected String address;
-    protected String phone;
-    protected String email;
-    protected int type;
+    private String id;
+    private String firstName;
+    private String lastName;
+    private int birthDate;
+    private String address;
+    private String phone;
+    private String email;
+    private CandidateType type;
 
     public Candidate() {
     }
 
-    public Candidate(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, int type) {
+    public Candidate(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, CandidateType type) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -80,11 +80,11 @@ public class Candidate {
         this.email = email;
     }
 
-    public int getType() {
+    public CandidateType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(CandidateType type) {
         this.type = type;
     }
 
@@ -94,6 +94,6 @@ public class Candidate {
 
     @Override
     public String toString() {
-        return firstName + " " + lastName + " | " + birthDate + " | " + address + " | " + phone + " | " + email + " | " + type;
+        return firstName + " " + lastName + " | " + birthDate + " | " + address + " | " + phone + " | " + email + " | " + type.getValue();
     }
 }

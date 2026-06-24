@@ -7,11 +7,11 @@ public class Fresher extends Candidate {
 
     public Fresher() {
         super();
-        this.type = 1;
+        setType(CandidateType.FRESHER);
     }
 
     public Fresher(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, int graduationDate, String graduationRank, String education) {
-        super(id, firstName, lastName, birthDate, address, phone, email, 1);
+        super(id, firstName, lastName, birthDate, address, phone, email, CandidateType.FRESHER);
         this.graduationDate = graduationDate;
         this.graduationRank = graduationRank;
         this.education = education;
