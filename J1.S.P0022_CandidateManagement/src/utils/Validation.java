@@ -42,12 +42,12 @@ public class Validation {
     }
 
     // 3. Nhập lựa chọn Y/N
-    public static boolean getInputYOrN() {
+    public static boolean getInputYOrN(String msg) {
         String str = "";
         boolean isValid = false;
         
         while (!isValid) {
-            System.out.print("Do you want to continue (Y/N)? ");
+            System.out.print(msg);
             str = scanner.nextLine().trim();
             if (str.equalsIgnoreCase("Y") || str.equalsIgnoreCase("N")) {
                 isValid = true;

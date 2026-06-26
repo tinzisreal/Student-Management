@@ -1,33 +1,25 @@
 package entity;
 
+import java.util.List;
+
 public class Experience extends Candidate {
-    private int expInYear;
-    private String proSkill;
+    private List<ProSkill> proSkills;
 
     public Experience() {
         super();
         setType(CandidateType.EXPERIENCE);
     }
 
-    public Experience(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, int expInYear, String proSkill) {
+    public Experience(String id, String firstName, String lastName, int birthDate, String address, String phone, String email, List<ProSkill> proSkills) {
         super(id, firstName, lastName, birthDate, address, phone, email, CandidateType.EXPERIENCE);
-        this.expInYear = expInYear;
-        this.proSkill = proSkill;
+        this.proSkills = proSkills;
     }
 
-    public int getExpInYear() {
-        return expInYear;
+    public List<ProSkill> getProSkills() {
+        return proSkills;
     }
 
-    public void setExpInYear(int expInYear) {
-        this.expInYear = expInYear;
-    }
-
-    public String getProSkill() {
-        return proSkill;
-    }
-
-    public void setProSkill(String proSkill) {
-        this.proSkill = proSkill;
+    public void setProSkills(List<ProSkill> proSkills) {
+        this.proSkills = proSkills;
     }
 }
