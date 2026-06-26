@@ -66,41 +66,50 @@ public class Validation {
 
     // 5. Nhập số điện thoại (ít nhất 10 số)
     public static String checkPhone(String msg) {
-        String phone;
-        while (true) {
+        String phone = "";
+        boolean isValid = false;
+        while (!isValid) {
             System.out.print(msg);
             phone = scanner.nextLine().trim();
             if (phone.matches("\\d{10,}")) {
-                return phone;
+                isValid = true;
+            } else {
+                System.out.println("Phone must be at least 10 digits.");
             }
-            System.out.println("Phone must be at least 10 digits.");
         }
+        return phone;
     }
 
     // 6. Nhập email format <account name>@<domain>
     public static String checkEmail(String msg) {
-        String email;
-        while (true) {
+        String email = "";
+        boolean isValid = false;
+        while (!isValid) {
             System.out.print(msg);
             email = scanner.nextLine().trim();
             if (email.matches("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$")) {
-                return email;
+                isValid = true;
+            } else {
+                System.out.println("Email must be in format <account name>@<domain>");
             }
-            System.out.println("Email must be in format <account name>@<domain>");
         }
+        return email;
     }
 
     // 7. Nhập rank of graduation (Excellence, Good, Fair, Poor)
     public static String checkGraduationRank(String msg) {
-        String rank;
-        while (true) {
+        String rank = "";
+        boolean isValid = false;
+        while (!isValid) {
             rank = getInputString(msg, "Rank cannot be empty");
             if (rank.equalsIgnoreCase("Excellence") || rank.equalsIgnoreCase("Good") 
                     || rank.equalsIgnoreCase("Fair") || rank.equalsIgnoreCase("Poor")) {
-                return rank;
+                isValid = true;
+            } else {
+                System.out.println("Rank must be one of (Excellence, Good, Fair, Poor)");
             }
-            System.out.println("Rank must be one of (Excellence, Good, Fair, Poor)");
         }
+        return rank;
     }
 
     // 8. Nhập năm kinh nghiệm (0..100)
