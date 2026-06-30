@@ -79,7 +79,9 @@ public class NormalizeText {
         if (!normalizedLines.isEmpty()) {
             int lastIndex = normalizedLines.size() - 1;
             String lastLine = normalizedLines.get(lastIndex);
-            if (!lastLine.isEmpty() && !lastLine.endsWith(".")) {
+            if (!lastLine.isEmpty()) {
+                // Dọn dẹp rác (dấu câu, khoảng trắng) ở cuối văn bản
+                lastLine = lastLine.replaceFirst("[\\p{Punct}\\s]+$", "");
                 normalizedLines.set(lastIndex, lastLine + ".");
             }
         }
