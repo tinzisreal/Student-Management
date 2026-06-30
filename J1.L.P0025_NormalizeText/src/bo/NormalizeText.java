@@ -5,6 +5,20 @@ import java.util.List;
 
 public class NormalizeText {
 
+    private static String processBrackets(String line, String openChar, String closeChar) {
+        String o = java.util.regex.Pattern.quote(openChar);
+        String c = java.util.regex.Pattern.quote(closeChar);
+        
+        StringBuffer sb = new StringBuffer();
+        java.util.regex.Matcher m = java.util.regex.Pattern.compile(o + "(.*?)" + c).matcher(line);
+        while (m.find()) {
+            String inside = m.group(1).trim();
+            m.appendReplacement(sb, " " + openChar + inside + closeChar + " ");
+        }
+        m.appendTail(sb);
+        return sb.toString().trim();
+    }
+
     public static List<String> normalize(List<String> lines) {
         if (lines == null || lines.isEmpty()) {
             return new ArrayList<>();
@@ -16,24 +30,34 @@ public class NormalizeText {
         for (String line : lines) {
             line = line.trim();
             
-            // Xóa các dấu câu và khoảng trắng thừa ở đầu dòng bằng \p{Punct}
+            // Xóa các dấu câu và khoảng trắng thừa ở đầu dòng
             line = line.replaceFirst("^[\\p{Punct}\\s]+", "");
             line = line.trim();
+            if (line.isEmpty()) continue;
+            
+            // Protect numbers (decimals and thousands separators)
+            line = line.replaceAll("(\\d)\\.(\\d)", "$1<NUM_DOT>$2");
+            line = line.replaceAll("(\\d),(\\d)", "$1<NUM_COMMA>$2");
+            
+            // Protect Ellipsis
+            line = line.replace("...", "<ELLIPSIS>");
+            
+            // Protect Abbreviations and Acronyms
+            line = line.replaceAll("(?i)\\b(mr|mrs|dr|prof|vs|etc)\\.", "$1<ABBR_DOT>");
+            line = line.replaceAll("(?i)\\be\\.g\\.", "<EG>");
+            line = line.replaceAll("(?i)\\bi\\.e\\.", "<IE>");
+            line = line.replaceAll("(?i)\\bu\\.s\\.a\\.", "<USA>");
             
             // 1. Only one space between words
             line = line.replaceAll("\\s+", " ");
 
-            // 3. Handle quotes: trim inside, ensure space outside
-            StringBuffer sbQuotes = new StringBuffer();
-            java.util.regex.Matcher m = java.util.regex.Pattern.compile("\"([^\"]*)\"").matcher(line);
-            while (m.find()) {
-                String inside = m.group(1).trim();
-                m.appendReplacement(sbQuotes, " \"" + inside + "\" ");
-            }
-            m.appendTail(sbQuotes);
-            line = sbQuotes.toString().trim();
+            // 3. Process Quotes and Brackets (trim inside, space outside)
+            line = processBrackets(line, "\"", "\"");
+            line = processBrackets(line, "(", ")");
+            line = processBrackets(line, "[", "]");
+            line = processBrackets(line, "{", "}");
             
-            // Clean up extra spaces created by quotes replacement
+            // Clean up extra spaces from bracket processing
             line = line.replaceAll("\\s+", " ");
 
             // 6. No space before comma or dot or colon
@@ -65,14 +89,25 @@ public class NormalizeText {
                     }
                 } else {
                     sb.append(c);
-                    if (c == '.') {
+                    if (c == '.' || c == '?' || c == '!') {
                         newSentence = true;
                     }
                 }
             }
             
+            line = sb.toString().trim();
             isAfterDot = newSentence;
-            normalizedLines.add(sb.toString().trim());
+            
+            // Restore protected tokens
+            line = line.replaceAll("<num_dot>", "."); 
+            line = line.replaceAll("<num_comma>", ",");
+            line = line.replaceAll("<ellipsis>", "...");
+            line = line.replaceAll("<abbr_dot>", ".");
+            line = line.replaceAll("<eg>", "e.g.");
+            line = line.replaceAll("<ie>", "i.e.");
+            line = line.replaceAll("<usa>", "U.S.A.");
+            
+            normalizedLines.add(line);
         }
 
         // 7. Must have dot at the end of text
