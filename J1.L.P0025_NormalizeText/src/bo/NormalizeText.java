@@ -16,6 +16,10 @@ public class NormalizeText {
         for (String line : lines) {
             line = line.trim();
             
+            // Xóa các dấu câu và khoảng trắng thừa ở đầu dòng bằng \p{Punct}
+            line = line.replaceFirst("^[\\p{Punct}\\s]+", "");
+            line = line.trim();
+            
             // 1. Only one space between words
             line = line.replaceAll("\\s+", " ");
 
